@@ -16,5 +16,8 @@
   "bugs": {
     "url": "https://github.com/Vaibhav2462/quiz-app/issues"
   },
-  "homepage": "https://github.com/Vaibhav2462/quiz-app#readme"
+  "homepage": "https://github.com/Vaibhav2462/quiz-app#readme",
+  "dependencies": {
+    "router": "^1.3.5"
+  }
 }
