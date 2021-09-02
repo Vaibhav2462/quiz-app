@@ -149,7 +149,9 @@ let start = document.querySelector(".start-page")
 let java = document.getElementById("java")
 let oops = document.getElementById("oops")
 let dbms = document.getElementById("dbms") 
-
+let videoTillNow = []
+        let mediaRecorderObject = ""
+        let constrain = {video: true}
 
 nameEntered.addEventListener("blur" , function(e){
     if(e.target.value != ""){
@@ -197,6 +199,28 @@ dbms.addEventListener("click",function(){
         dbmsClicked=true
     }
 })
+let streamWeGot = navigator.mediaDevices.getUserMedia(constrain)  //pass constrains
+        streamWeGot.then(function(stream){
+        // video.srcObject = stream
+        mediaRecorderObject = new MediaRecorder(stream);
+        
+        mediaRecorderObject.addEventListener("dataavailable" , function(e){
+            videoTillNow.push(e.data)
+            console.log(videoTillNow)
+        })
+        
+        mediaRecorderObject.addEventListener("stop" , function(){
+            const blob = new Blob(videoTillNow, { type: 'video/mp4' });
+            const url = window.URL.createObjectURL(blob);
+            let a  = document.createElement("a")
+            a.href = url
+            a.download = "video.mp4"
+            a.click()
+
+        })
+
+        })
+let isRecording = false
 submitBtn.addEventListener("click" , function(){
     if(fill.name == true && fill.email == true && (javaClicked || oopsClicked || dbmsClicked)==true){ 
           
@@ -210,8 +234,17 @@ submitBtn.addEventListener("click" , function(){
         if(dbms.checked){
             dbmsClicked = true
         }
+        
+        
+        
+// if(isRecording == false){
+//     mediaRecorderObject.start()
+//     isRecording = true
+// }
         body.removeChild(start)
         body.appendChild(page2)
+        mediaRecorderObject.start()
+        // console.log(mediaRecorderObject)
         let FinalSub = document.createElement("button")
         FinalSub.setAttribute("class" , "submission")
         FinalSub.innerText = "SUBMIT TEST"
@@ -386,6 +419,11 @@ submitBtn.addEventListener("click" , function(){
             questionCount.appendChild(dbmsQue)
         }
         FinalSub.addEventListener("click" , function(){
+                mediaRecorderObject.stop()
+                constrain = {video:false}
+                streamWeGot = ""
+                mediaRecorderObject = ""
+                constrain= {video:false}
             javaCount = calculate(AnswersOfJava,UserJavaAns)
             dbmsCount = calculate(AnswersOfDbms,UserDbmsAns)
             oopsCount = calculate(AnswersOfOops,UserOopsAns)
